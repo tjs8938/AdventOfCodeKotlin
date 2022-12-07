@@ -3,6 +3,8 @@ package AdventOfCodeKotlin.framework
 import framework.User
 import java.io.File
 import org.jsoup.Jsoup
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 
 interface PuzzleInputProvider {
     fun get() : String
@@ -20,6 +22,8 @@ interface PuzzleInputProvider {
 
 private const val URL = "https://adventofcode.com/%d/day/%d"
 
+private const val RESOURCE_PATH = "C:\\personal\\AdventOfCodeKotlin\\app\\src\\main\\resources"
+
 class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider {
 
     val INPUT_URL = "$URL/input"
@@ -27,7 +31,7 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
 
     override fun get() : String {
 
-        val filename: String = String.format("C:\\personal\\AdventOfCodeKotlin\\app\\src\\main\\resources\\%d\\Day%02d\\%s\\input.txt", year, day, user.token)
+        val filename: String = String.format("$RESOURCE_PATH\\%d\\Day%02d\\%s\\input.txt", year, day, user.token)
         val inputFile = File(filename)
         if (!inputFile.exists()) {
             // Need to get input from AoC
@@ -35,7 +39,7 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
                 url = String.format(INPUT_URL, year, day),
                 cookies = mapOf("session" to user.token)
             )
-            File(String.format("C:\\personal\\AdventOfCodeKotlin\\app\\src\\main\\resources\\%d\\Day%02d\\%s", year, day, user.token)).mkdirs()
+            File(String.format("$RESOURCE_PATH\\%d\\Day%02d\\%s", year, day, user.token)).mkdirs()
             inputFile.writeText(response.text)
         }
 
@@ -46,13 +50,34 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
         if (answer == "") {
             return
         }
-        val response = khttp.post(
-            url = String.format(SUBMIT_URL, year, day),
-            cookies = mapOf("session" to user.token),
-            data=mapOf("level" to part, "answer" to answer)
-        )
-        val parsed = Jsoup.parse(response.text)
-        println(parsed.allElements.find { it.tagName() == "article" }?.text())
+        val mapper = jacksonObjectMapper()
+        val submissionFilename = String.format("$RESOURCE_PATH\\%d\\Day%02d\\%s\\submissions.json", year, day, user.token)
+        val submissionFile = File(submissionFilename)
+        val submissions: MutableMap<Int, MutableMap<String, String>> = if (submissionFile.exists()) {
+            mapper.readValue(submissionFile.readText())
+        } else {
+            mutableMapOf()
+        }
+
+        val message = if (submissions.containsKey(part) && submissions[part]?.containsKey(answer) == true) {
+            submissions[part]?.get(answer)
+        } else {
+            val response = khttp.post(
+                url = String.format(SUBMIT_URL, year, day),
+                cookies = mapOf("session" to user.token),
+                data = mapOf("level" to part, "answer" to answer)
+            )
+            val parsed = Jsoup.parse(response.text)
+            val resp = parsed.allElements.find { it.tagName() == "article" }?.text()!!
+
+            val a_map = submissions.getOrDefault(part, mutableMapOf())
+            a_map[answer] = resp
+            mapper.writeValue(submissionFile, submissions)
+
+            // return the response to message
+            resp
+        }
+        println(message)
     }
 }
 

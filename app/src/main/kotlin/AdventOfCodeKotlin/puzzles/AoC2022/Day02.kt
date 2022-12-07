@@ -7,6 +7,25 @@ import java.security.InvalidParameterException
 
 class Day02 {
     companion object {
+
+        val part1Mapping = listOf("B X", "C Y", "A Z", "A X", "B Y", "C Z", "C X", "A Y", "B Z")
+
+        fun betterPart1(puzzle: PuzzleInputProvider) : String {
+            return puzzle.getAsString()
+                .map { part1Mapping.indexOf(it) + 1 }
+                .sum().toString()
+        }
+
+
+        val part2Mapping = listOf("B X", "C X", "A X", "A Y", "B Y", "C Y", "C Z", "A Z", "B Z")
+
+        fun betterPart2(puzzle: PuzzleInputProvider) : String {
+            return puzzle.getAsString()
+                .map { part2Mapping.indexOf(it) + 1 }
+                .sum().toString()
+        }
+
+
         fun part1(puzzle: PuzzleInputProvider): String {
             return puzzle.getAsString().map { it.split(' ') }
                 .map {
@@ -90,5 +109,7 @@ class Day02 {
 
 fun main() {
 //    Runner.solve(2022, 2, part1 = Day02::part1)
-    Runner.solve(2022, 2, part2 = Day02::part2)
+    Runner.solve(2022, 2, part1 = Day02::betterPart1)
+//    Runner.solve(2022, 2, part2 = Day02::part2)
+    Runner.solve(2022, 2, part2 = Day02::betterPart2)
 }

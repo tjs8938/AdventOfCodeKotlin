@@ -1,4 +1,4 @@
-package AdventOfCodeKotlin.puzzles.AoC4044
+package AdventOfCodeKotlin.puzzles.AoC2022
 
 import AdventOfCodeKotlin.framework.PuzzleInputProvider
 import AdventOfCodeKotlin.framework.Runner
