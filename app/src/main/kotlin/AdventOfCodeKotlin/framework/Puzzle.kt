@@ -72,6 +72,7 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
 
             val a_map = submissions.getOrDefault(part, mutableMapOf())
             a_map[answer] = resp
+            submissions[part] = a_map
             mapper.writeValue(submissionFile, submissions)
 
             // return the response to message

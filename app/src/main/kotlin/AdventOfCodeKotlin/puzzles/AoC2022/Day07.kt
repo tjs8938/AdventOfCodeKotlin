@@ -40,6 +40,7 @@ class Day07 {
             }
             return allDirs
         }
+
         fun part1(puzzle: PuzzleInputProvider): String {
             val allDirs = parseInput(puzzle)
 
@@ -66,8 +67,7 @@ data class DirTree(val name: String, val parent: DirTree? = null) {
     val subdirs: MutableMap<String, DirTree> = mutableMapOf()
     val files: MutableMap<String, Int> = mutableMapOf()
 
-    val bytes: Int
-        get() {
-            return files.values.sum() + subdirs.map { it.value.bytes }.sum()
-        }
+    val bytes: Int by lazy {
+        files.values.sum() + subdirs.map { it.value.bytes }.sum()
+    }
 }
