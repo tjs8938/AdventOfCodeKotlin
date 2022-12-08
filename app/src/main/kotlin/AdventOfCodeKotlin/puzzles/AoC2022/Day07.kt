@@ -3,6 +3,14 @@ package AdventOfCodeKotlin.puzzles.AoC2022
 import AdventOfCodeKotlin.framework.PuzzleInputProvider
 import AdventOfCodeKotlin.framework.Runner
 
+data class DirTree(val name: String, val parent: DirTree? = null) {
+    val subdirs: MutableMap<String, DirTree> = mutableMapOf()
+    val files: MutableMap<String, Int> = mutableMapOf()
+
+    val bytes: Int by lazy {
+        files.values.sum() + subdirs.map { it.value.bytes }.sum()
+    }
+}
 
 class Day07 {
     companion object {
@@ -63,11 +71,3 @@ fun main() {
     Runner.solve(2022, 7, part2 = Day07::part2)
 }
 
-data class DirTree(val name: String, val parent: DirTree? = null) {
-    val subdirs: MutableMap<String, DirTree> = mutableMapOf()
-    val files: MutableMap<String, Int> = mutableMapOf()
-
-    val bytes: Int by lazy {
-        files.values.sum() + subdirs.map { it.value.bytes }.sum()
-    }
-}
