@@ -59,7 +59,7 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
             mutableMapOf()
         }
 
-        val message = if (submissions.containsKey(part) && submissions[part]?.containsKey(answer) == true) {
+        val message = if (submissions.containsKey(part) && submissions[part]?.containsKey(answer) == true && !submissions[part]!![answer]!!.contains("You gave an answer too recently")) {
             submissions[part]?.get(answer)
         } else {
             val response = khttp.post(
