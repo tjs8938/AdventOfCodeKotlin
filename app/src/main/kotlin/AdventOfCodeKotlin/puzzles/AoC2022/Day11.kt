@@ -36,7 +36,7 @@ class Day11 {
             val monkeys: List<Monkey> = parseInput(puzzle)
 
             repeat(20) {
-                monkeys.forEach { it.inspect(monkeys) }
+                monkeys.forEach { it.inspect(monkeys) { i -> i.divide(BigInteger("3"))} }
             }
 
             return monkeys.sortedByDescending { it.inspectionCount }
@@ -50,7 +50,7 @@ class Day11 {
             val prodOfTests = monkeys.map { it.test }.reduce(BigInteger::times)
 
             repeat(10000) {
-                monkeys.forEach { it.inspectNoRelief(monkeys, prodOfTests) }
+                monkeys.forEach { it.inspect(monkeys) { i -> i.mod(prodOfTests)} }
             }
 
             return monkeys.sortedByDescending { it.inspectionCount }
@@ -73,32 +73,16 @@ data class Monkey(
     val posDest: Int,
     val negDest: Int
 ) {
-    var inspectionCount = BigInteger.ZERO
+    var inspectionCount: BigInteger = BigInteger.ZERO
 
-    fun inspect(monkeys: List<Monkey>) {
+    fun inspect(monkeys: List<Monkey>, relief: (BigInteger) -> BigInteger) {
         inspectionCount += BigInteger(items.size.toString())
 
         while (items.isNotEmpty()) {
             var i = items.removeFirst()
             i = operation.invoke(i)
-            i = i.divide(BigInteger("3"))
+            i = relief(i)
             val target = if (i.mod(test) == BigInteger.ZERO) {
-                posDest
-            } else {
-                negDest
-            }
-            monkeys[target].items.add(i)
-        }
-    }
-
-    fun inspectNoRelief(monkeys: List<Monkey>, prodOfTests: BigInteger) {
-        inspectionCount += BigInteger(items.size.toString())
-
-        while (items.isNotEmpty()) {
-            var i = items.removeFirst()
-            i = operation.invoke(i)
-            i = i.mod(prodOfTests)
-            val target = if ( i.mod(test) == BigInteger.ZERO) {
                 posDest
             } else {
                 negDest

@@ -111,7 +111,6 @@ fun parseInput(input: String): Packet {
                 ""
             }
         }
-
     }
 
 
