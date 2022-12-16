@@ -49,123 +49,102 @@ class Day15 {
             return sensors
         }
 
-        fun part2IfYouWantToBlowTheHeap(puzzle: PuzzleInputProvider): String {
-            val y = 4000000
-            var unscannedSpace = mutableListOf((0 to 0) to (y to y))
-
-            // read/parse sensors from file
-            val sensors = parseInput(puzzle)
-
-            sensors.forEachIndexed { index, sensor ->
-                println("Sensor $index - sections = ${unscannedSpace.size}")
-                val newUnscannedSpace = mutableListOf<Pair<Pair<Int, Int>, Pair<Int, Int>>>()
-                unscannedSpace.forEach { unscanned ->
-
-                    val reachableX =
-                        sensor.reachableX().let { (low, high) -> max(low, 0) to min(high, y) }
-                    val reachableY =
-                        sensor.reachableY().let { (low, high) -> max(low, 0) to min(high, y) }
-
-                    val addSpace =
-                        { space: Pair<Pair<Int, Int>, Pair<Int, Int>> -> newUnscannedSpace.add(space) }
-
-                    if (sensor.contains(unscanned)) {
-                        // nothing to add
-                    } else if (sensor.overlaps(unscanned)) {
-                        // Look "above" the sensor region
-                        if (unscanned.first.second < reachableY.first) {
-                            addSpace(unscanned.first to (unscanned.second.first to (reachableY.first - 1)))
-                        }
-
-                        // Look "left" of the sensor region
-                        if (unscanned.first.first < reachableX.first) {
-                            addSpace((unscanned.first.first to reachableY.first) to (reachableX.first - 1 to unscanned.second.second))
-                        }
-
-                        // Look "right" of the sensor region
-                        if (unscanned.second.first > reachableX.second) {
-                            addSpace((reachableX.second + 1 to reachableY.first) to unscanned.second)
-                        }
-
-                        // Look "below" the sensor region
-                        if (unscanned.second.second > reachableY.second) {
-                            addSpace((reachableX.first to reachableY.second + 1) to (reachableX.second to unscanned.second.second))
-                        }
-
-                        (max(reachableY.first, unscanned.first.second)..min(
-                            reachableY.second,
-                            unscanned.second.second
-                        )).forEach { y ->
-                            sensor.scannableOnY(y)?.let { (lowX, highX) ->
-                                if (unscanned.first.first < lowX) {
-                                    addSpace(
-                                        (unscanned.first.first to y) to (min(
-                                            lowX - 1,
-                                            unscanned.second.first
-                                        ) to y)
-                                    )
-                                }
-
-                                if (unscanned.second.first > highX) {
-                                    addSpace(
-                                        (max(
-                                            highX + 1,
-                                            unscanned.first.first
-                                        ) to y) to (unscanned.second.first to y)
-                                    )
-                                }
-                            }
-                        }
-                    } else {
-                        addSpace(unscanned)
-                    }
-                }
-                unscannedSpace = newUnscannedSpace
-            }
-
-            println(unscannedSpace)
-            return ""
-        }
+        // unused
+//        fun part2IfYouWantToBlowTheHeap(puzzle: PuzzleInputProvider): String {
+//            val y = 4000000
+//            var unscannedSpace = mutableListOf((0 to 0) to (y to y))
+//
+//            // read/parse sensors from file
+//            val sensors = parseInput(puzzle)
+//
+//            sensors.forEachIndexed { index, sensor ->
+//                println("Sensor $index - sections = ${unscannedSpace.size}")
+//                val newUnscannedSpace = mutableListOf<Pair<Pair<Int, Int>, Pair<Int, Int>>>()
+//                unscannedSpace.forEach { unscanned ->
+//
+//                    val reachableX =
+//                        sensor.reachableX().let { (low, high) -> max(low, 0) to min(high, y) }
+//                    val reachableY =
+//                        sensor.reachableY().let { (low, high) -> max(low, 0) to min(high, y) }
+//
+//                    val addSpace =
+//                        { space: Pair<Pair<Int, Int>, Pair<Int, Int>> -> newUnscannedSpace.add(space) }
+//
+//                    if (sensor.contains(unscanned)) {
+//                        // nothing to add
+//                    } else if (sensor.overlaps(unscanned)) {
+//                        // Look "above" the sensor region
+//                        if (unscanned.first.second < reachableY.first) {
+//                            addSpace(unscanned.first to (unscanned.second.first to (reachableY.first - 1)))
+//                        }
+//
+//                        // Look "left" of the sensor region
+//                        if (unscanned.first.first < reachableX.first) {
+//                            addSpace((unscanned.first.first to reachableY.first) to (reachableX.first - 1 to unscanned.second.second))
+//                        }
+//
+//                        // Look "right" of the sensor region
+//                        if (unscanned.second.first > reachableX.second) {
+//                            addSpace((reachableX.second + 1 to reachableY.first) to unscanned.second)
+//                        }
+//
+//                        // Look "below" the sensor region
+//                        if (unscanned.second.second > reachableY.second) {
+//                            addSpace((reachableX.first to reachableY.second + 1) to (reachableX.second to unscanned.second.second))
+//                        }
+//
+//                        (max(reachableY.first, unscanned.first.second)..min(
+//                            reachableY.second,
+//                            unscanned.second.second
+//                        )).forEach { y ->
+//                            sensor.scannableOnY(y)?.let { (lowX, highX) ->
+//                                if (unscanned.first.first < lowX) {
+//                                    addSpace(
+//                                        (unscanned.first.first to y) to (min(
+//                                            lowX - 1,
+//                                            unscanned.second.first
+//                                        ) to y)
+//                                    )
+//                                }
+//
+//                                if (unscanned.second.first > highX) {
+//                                    addSpace(
+//                                        (max(
+//                                            highX + 1,
+//                                            unscanned.first.first
+//                                        ) to y) to (unscanned.second.first to y)
+//                                    )
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        addSpace(unscanned)
+//                    }
+//                }
+//                unscannedSpace = newUnscannedSpace
+//            }
+//
+//            println(unscannedSpace)
+//            return ""
+//        }
 
         fun part2(puzzle: PuzzleInputProvider): String {
             // read/parse sensors from file
             val sensors = parseInput(puzzle)
-            val points = mutableSetOf<Pair<Int, Int>>()
             sensors.forEach {
-                it.justOutOfReach(4000000, points)
-                println(points.size)
+                it.justOutOfReach(4000000, sensors)?.let {
+                    return BigInteger(it.first.toString()).times(BigInteger("4000000")).plus(BigInteger(it.second.toString())).toString()
+                }
             }
 
-            val onlyPoint = points.first { p ->
-                sensors.none { it.reaches(p) }
-            }
-            return BigInteger(onlyPoint.first.toString()).times(BigInteger("4000000")).plus(BigInteger(onlyPoint.second.toString())).toString()
+            return ""
         }
     }
 }
 
 
 fun main() {
-
-    val example = ExamplePuzzle(
-        "Sensor at x=13, y=2: closest beacon is at x=15, y=3\n" +
-            "Sensor at x=2, y=18: closest beacon is at x=-2, y=15\n" +
-            "Sensor at x=9, y=16: closest beacon is at x=10, y=16\n" +
-            "Sensor at x=12, y=14: closest beacon is at x=10, y=16\n" +
-            "Sensor at x=10, y=20: closest beacon is at x=10, y=16\n" +
-            "Sensor at x=14, y=17: closest beacon is at x=10, y=16\n" +
-            "Sensor at x=8, y=7: closest beacon is at x=2, y=10\n" +
-            "Sensor at x=2, y=0: closest beacon is at x=2, y=10\n" +
-            "Sensor at x=0, y=11: closest beacon is at x=2, y=10\n" +
-            "Sensor at x=20, y=14: closest beacon is at x=25, y=17\n" +
-            "Sensor at x=17, y=20: closest beacon is at x=21, y=22\n" +
-            "Sensor at x=16, y=7: closest beacon is at x=15, y=3\n" +
-            "Sensor at x=14, y=3: closest beacon is at x=15, y=3\n" +
-            "Sensor at x=20, y=1: closest beacon is at x=15, y=3"
-    )
-
-//    println(Day15.part2(example))
-//    Runner.solve(2022, 15, part1 = Day15::part1)
+    Runner.solve(2022, 15, part1 = Day15::part1)
     Runner.solve(2022, 15, part2 = Day15::part2)
 }
 
@@ -197,22 +176,23 @@ class Sensor(sx: Int, sy: Int, bx: Int, by: Int) {
         }
     }
 
-    fun justOutOfReach(upperCorner: Int, points: MutableSet<Pair<Int, Int>>): Set<Pair<Int, Int>> {
+    fun justOutOfReach(upperCorner: Int, sensors: List<Sensor>): Pair<Int, Int>? {
         if (reachableY().first > 0) {
-            points.add(sensorLocation.first to reachableY().first - 1)
+            (sensorLocation.first to reachableY().first - 1).takeIf { sensors.none { s -> s.reaches(it) } }?.let { return it }
         }
         if (reachableY().second < upperCorner) {
-            points.add(sensorLocation.first to reachableY().second + 1)
+            (sensorLocation.first to reachableY().second + 1).takeIf { sensors.none { s -> s.reaches(it) } }?.let { return it }
         }
         (max(0, reachableY().first)..min(upperCorner, reachableY().second)).forEach { y ->
             scannableOnY(y)?.let { (lowX, highX) ->
-                (lowX - 1).takeIf { it >= 0 }?.let { points.add(it to y) }
-                (highX + 1).takeIf { it <= upperCorner }?.let { points.add(it to y) }
+                (lowX - 1).takeIf { it >= 0 }?.let { (it to y).takeIf { sensors.none { s -> s.reaches(it) } }?.let { return it } }
+                (highX + 1).takeIf { it <= upperCorner }?.let { (it to y).takeIf { sensors.none { s -> s.reaches(it) } }?.let { return it } }
             }
         }
-        return points
+        return null
     }
 
+    // unused
     fun overlaps(unscanned: Pair<Pair<Int, Int>, Pair<Int, Int>>): Boolean {
         return unscanned.corners().any { this.reaches(it) } || this.corners()
             .any { unscanned.contains(it) }
