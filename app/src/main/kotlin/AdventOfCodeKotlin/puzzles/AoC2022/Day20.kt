@@ -66,10 +66,10 @@ class Day20 {
         private fun calcAnswer(nodes: List<Node>): String {
             val zero = nodes.first { it.num == 0L }
             val oneThousand = zero.walk(1000)
-            val twoThousamd = oneThousand.walk(1000)
-            val threeThousand = twoThousamd.walk(1000)
+            val twoThousand = oneThousand.walk(1000)
+            val threeThousand = twoThousand.walk(1000)
 
-            return (oneThousand.num + twoThousamd.num + threeThousand.num).toString()
+            return (oneThousand.num + twoThousand.num + threeThousand.num).toString()
         }
     }
 }
