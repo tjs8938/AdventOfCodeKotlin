@@ -73,16 +73,6 @@ enum class Material { ORE, CLAY, OBSIDIAN, GEODE }
 
 class Day19 {
     companion object {
-        fun part1(puzzle: PuzzleInputProvider): String {
-
-            val blueprints = puzzle.getAsString().map { Blueprint(it) }
-            val bestForBlueprint = findBestForEachBlueprint(blueprints)
-
-//            println(bestForBlueprint)
-
-            return bestForBlueprint.map { it.key.blueprintNumber * it.value }.sum().toString()
-        }
-
         private fun findBestForEachBlueprint(blueprints: List<Blueprint>, timeToBuild: Int = 24): MutableMap<Blueprint, Int> {
             val bestForBlueprint = mutableMapOf<Blueprint, Int>()
             blueprints.forEach { blueprint ->
@@ -111,7 +101,7 @@ class Day19 {
                             addFactory(factories, factory, previousFactories)
                         } else {
 
-                            robotsToBuild.reversed().forEach {
+                            robotsToBuild.forEach {
                                 val newFactory = factory.copyFactory()
                                 newFactory.buildRobot(it)
                                 addFactory(factories, newFactory, previousFactories)
@@ -139,6 +129,16 @@ class Day19 {
                 previousFactories.add(factory)
                 factories.addFirst(factory)
             }
+        }
+
+        fun part1(puzzle: PuzzleInputProvider): String {
+
+            val blueprints = puzzle.getAsString().map { Blueprint(it) }
+            val bestForBlueprint = findBestForEachBlueprint(blueprints)
+
+//            println(bestForBlueprint)
+
+            return bestForBlueprint.map { it.key.blueprintNumber * it.value }.sum().toString()
         }
 
         fun part2(puzzle: PuzzleInputProvider): String {
