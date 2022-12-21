@@ -52,27 +52,6 @@ class Day21 {
                     )
                 }
             }
-
-            fun equation(others: Map<String, Monkey>) : String {
-                return if (name == "humn") {
-                    "X"
-                } else if (simpleYell != null) {
-                    simpleYell.toString()
-                } else {
-                    val pieces = job.split(" ")
-                    var equation1 = others[otherMonkeys!!.first]!!.equation(others)
-                    if (!equation1.contains("X")) {
-                        equation1 = others[otherMonkeys!!.first]!!.yell(others).toString()
-                    }
-                    var equation2 = others[otherMonkeys!!.second]!!.equation(others)
-                    if (!equation2.contains("X")) {
-                        equation2 = others[otherMonkeys!!.second]!!.yell(others).toString()
-                    }
-
-                    val symbol = if (name == "root") { "=" } else { pieces[1] }
-                    "($equation1) $symbol ($equation2)"
-                }
-            }
         }
 
         fun part1(puzzle: PuzzleInputProvider): String {
