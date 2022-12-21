@@ -75,10 +75,14 @@ class Day21 {
 
             var myNumber = BigInteger.ONE
             val two = BigInteger.valueOf(2L)
-            while (monkeys["root"]!!.yell(monkeys) > BigInteger.ZERO) {
+            val predicate: (BigInteger) -> Boolean = if (monkeys["root"]!!.yell(monkeys) > BigInteger.ZERO) {
+                {x -> x > BigInteger.ZERO}
+            } else {
+                {x -> x < BigInteger.ZERO}
+            }
+            while (predicate.invoke(monkeys["root"]!!.yell(monkeys))) {
                 myNumber *= two
                 monkeys["humn"]!!.simpleYell = myNumber
-//                println("$myNumber: ${monkeys["root"]!!.yell(monkeys)}")
             }
 
             var lower = myNumber / two
@@ -87,12 +91,11 @@ class Day21 {
             while (rootMonkeyVal != BigInteger.ZERO) {
                 myNumber = (lower + upper) / two
                 rootMonkeyVal = calc(monkeys, myNumber)
-                if (rootMonkeyVal > BigInteger.ZERO) {
+                if (predicate.invoke(monkeys["root"]!!.yell(monkeys))) {
                     lower = myNumber
                 } else {
                     upper = myNumber
                 }
-//                println("$myNumber: ${monkeys["root"]!!.yell(monkeys)}")
             }
 
             while (true) {
@@ -141,7 +144,7 @@ fun main() {
 
     Runner.solve(2022, 21, part1 = Day21::part1)
 
-//    Day21.part2(example)
+    assert(Day21.part2(example) == "301")
     Runner.solve(2022, 21, part2 = Day21::part2)
 }
 
