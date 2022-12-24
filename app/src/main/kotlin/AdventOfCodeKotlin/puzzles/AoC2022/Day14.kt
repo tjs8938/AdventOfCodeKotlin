@@ -104,7 +104,7 @@ class Day14 {
     }
 }
 
-private operator fun Pair<Int, Int>.plus(move: Pair<Int, Int>): Pair<Int, Int> {
+operator fun Pair<Int, Int>.plus(move: Pair<Int, Int>): Pair<Int, Int> {
     return (first + move.first) to (second + move.second)
 }
 
