@@ -21,6 +21,7 @@ repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral();
     maven { url = uri( "https://jitpack.io") };
+    maven { url = uri( "https://mvnrepository.com") };
 }
 
 dependencies {
@@ -39,7 +40,9 @@ dependencies {
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 
-    implementation("com.github.jkcclemens:khttp:0.1.0")
+    implementation ("org.slf4j:slf4j-reload4j:1.7.36")
+    implementation("io.ktor:ktor-client-java:2.3.7")
+//    implementation("com.github.jkcclemens:khttp:0.1.0")
     implementation("org.jsoup:jsoup:1.14.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
 }
