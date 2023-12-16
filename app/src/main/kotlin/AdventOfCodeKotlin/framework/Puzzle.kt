@@ -5,15 +5,6 @@ import java.io.File
 import org.jsoup.Jsoup
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.java.Java
-import io.ktor.client.request.cookie
-import io.ktor.client.request.post
-import io.ktor.client.request.request
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpMethod
-import kotlinx.coroutines.runBlocking
 
 interface PuzzleInputProvider {
     fun get() : String
@@ -44,16 +35,12 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
         val inputFile = File(filename)
         if (!inputFile.exists()) {
             // Need to get input from AoC
-            val response = HttpClient(Java).use { client ->
-                runBlocking {
-                    client.request(String.format(INPUT_URL, year, day)) {
-                        method = HttpMethod.Get
-                        cookie(name = "session", value = user.token)
-                    }.bodyAsText()
-                }
-            }
+            val response = khttp.get(
+                url = String.format(INPUT_URL, year, day),
+                cookies = mapOf("session" to user.token)
+            )
             File(String.format("$RESOURCE_PATH\\%d\\Day%02d\\%s", year, day, user.token)).mkdirs()
-            inputFile.writeText(response)
+            inputFile.writeText(response.text)
         }
 
         return inputFile.readText().trimEnd()
@@ -75,16 +62,12 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
         val message = if (submissions.containsKey(part) && submissions[part]?.containsKey(answer) == true && !submissions[part]!![answer]!!.contains("You gave an answer too recently")) {
             submissions[part]?.get(answer)
         } else {
-            val response = HttpClient(Java).use { client ->
-                runBlocking {
-                    client.request(String.format(SUBMIT_URL, year, day)) {
-                        method = HttpMethod.Post
-                        cookie(name = "session", value = user.token)
-                        setBody(mapOf("level" to part, "answer" to answer))
-                    }.bodyAsText()
-                }
-            }
-            val parsed = Jsoup.parse(response)
+            val response = khttp.post(
+                url = String.format(SUBMIT_URL, year, day),
+                cookies = mapOf("session" to user.token),
+                data = mapOf("level" to part, "answer" to answer)
+            )
+            val parsed = Jsoup.parse(response.text)
             val resp = parsed.allElements.find { it.tagName() == "article" }?.text()!!
 
             val a_map = submissions.getOrDefault(part, mutableMapOf())
