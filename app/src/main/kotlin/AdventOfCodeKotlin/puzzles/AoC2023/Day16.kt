@@ -65,11 +65,7 @@ class Day16 {
     }
 }
 
-private operator fun List<String>.get(location: Pair<Int, Int>): Char {
-    return get(location.first)[location.second]
-}
-
-private fun List<String>.contains(location: Pair<Int, Int>) : Boolean {
+fun List<String>.contains(location: Pair<Int, Int>) : Boolean {
     return indices.contains(location.first) && get(location.first).indices.contains(location.second)
 }
 

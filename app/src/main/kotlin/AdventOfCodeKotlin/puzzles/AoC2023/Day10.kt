@@ -9,7 +9,7 @@ import AdventOfCodeKotlin.puzzles.AoC2023.Day10.Directions.EAST
 import AdventOfCodeKotlin.puzzles.AoC2023.Day10.Directions.WEST
 
 
-private operator fun List<String>.get(pairIndex: Pair<Int, Int>): Char {
+operator fun List<String>.get(pairIndex: Pair<Int, Int>): Char {
     return this[pairIndex.first][pairIndex.second]
 }
 
@@ -23,6 +23,29 @@ class Day10 {
         operator fun plus(location: Pair<Int, Int>): Pair<Int, Int> {
             return (location.first + offset.first) to (location.second + offset.second)
         }
+
+        fun move(start: Pair<Int, Int>, count: Int) : Pair<Int, Int> {
+            return (start.first + (count * offset.first)) to (start.second + (count * offset.second))
+        }
+
+        fun opposite() : Directions {
+            return when(this) {
+                NORTH -> SOUTH
+                SOUTH -> NORTH
+                EAST -> WEST
+                WEST -> EAST
+            }
+        }
+
+        fun clockwise() : Directions {
+            return when(this) {
+                NORTH -> EAST
+                SOUTH -> WEST
+                EAST -> SOUTH
+                WEST -> NORTH
+            }
+        }
+
     }
     companion object {
         fun part1(puzzle: PuzzleInputProvider): String {
