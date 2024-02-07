@@ -14,7 +14,7 @@ class Runner {
                     val startTime = Instant.now()
                     val part1Answer = it.invoke(puzzle)
                     println("Part 1 - $part1Answer - calculated in ${Instant.now().toEpochMilli() - startTime.toEpochMilli()} ms")
-                    puzzle.post(part1Answer, 1)
+//                    puzzle.post(part1Answer, 1)
                 }
                 part2?.let {
                     val startTime = Instant.now()

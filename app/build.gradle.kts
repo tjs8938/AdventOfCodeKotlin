@@ -14,7 +14,7 @@ plugins {
 
     // Apply the application plugin to add support for building a CLI application in Java.
     application
-    kotlin("jvm") version "1.7.21"
+    kotlin("jvm") version "1.9.0"
 }
 
 repositories {
@@ -42,17 +42,14 @@ dependencies {
     implementation("com.github.jkcclemens:khttp:0.1.0")
     implementation("org.jsoup:jsoup:1.14.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
+
+    implementation("tools.aqua:z3-turnkey:4.12.2.1")
 }
 
 application {
     // Define the main class for the application.
     mainClass.set("AdventOfCodeKotlin.AppKt")
 }
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.8"
+kotlin {
+    jvmToolchain(17)
 }
