@@ -5,17 +5,24 @@ import java.io.File
 import org.jsoup.Jsoup
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 interface PuzzleInputProvider {
-    fun get() : String
+    fun get(): String
 
     fun post(answer: String, part: Int)
 
-    fun getAsString() : List<String> {
+    fun getAsString(): List<String> {
         return get().split("\r\n", "\n")
     }
 
-    fun getAsInt() : List<Int> {
+    fun getAsGrid(): List<List<Char>> {
+        return getAsString().map { it.toList() }
+    }
+
+    fun getAsInt(): List<Int> {
         return getAsString().map { it.toInt() }
     }
 }
@@ -29,18 +36,27 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
     val INPUT_URL = "$URL/input"
     val SUBMIT_URL = "$URL/answer"
 
-    override fun get() : String {
+    override fun get(): String {
 
         val filename: String = String.format("$RESOURCE_PATH\\%d\\Day%02d\\%s\\input.txt", year, day, user.token)
         val inputFile = File(filename)
         if (!inputFile.exists()) {
+            val client = OkHttpClient()
             // Need to get input from AoC
-            val response = khttp.get(
-                url = String.format(INPUT_URL, year, day),
-                cookies = mapOf("session" to user.token)
-            )
-            File(String.format("$RESOURCE_PATH\\%d\\Day%02d\\%s", year, day, user.token)).mkdirs()
-            inputFile.writeText(response.text)
+            val request = Request.Builder()
+                .url(String.format(INPUT_URL, year, day))
+                .header("Cookie", "session=${user.token}")
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                if (response.isSuccessful) {
+                    File(String.format("$RESOURCE_PATH\\%d\\Day%02d\\%s", year, day, user.token)).mkdirs()
+                    response.body?.string()?.let { inputFile.writeText(it) }
+                } else {
+                    println("Request failed with status: ${response.code}")
+                }
+            }
+
         }
 
         return inputFile.readText().trimEnd()
@@ -51,7 +67,8 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
             return
         }
         val mapper = jacksonObjectMapper()
-        val submissionFilename = String.format("$RESOURCE_PATH\\%d\\Day%02d\\%s\\submissions.json", year, day, user.token)
+        val submissionFilename =
+            String.format("$RESOURCE_PATH\\%d\\Day%02d\\%s\\submissions.json", year, day, user.token)
         val submissionFile = File(submissionFilename)
         val submissions: MutableMap<Int, MutableMap<String, String>> = if (submissionFile.exists()) {
             mapper.readValue(submissionFile.readText())
@@ -59,25 +76,44 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
             mutableMapOf()
         }
 
-        val message = if (submissions.containsKey(part) && submissions[part]?.containsKey(answer) == true && !submissions[part]!![answer]!!.contains("You gave an answer too recently")) {
-            submissions[part]?.get(answer)
-        } else {
-            val response = khttp.post(
-                url = String.format(SUBMIT_URL, year, day),
-                cookies = mapOf("session" to user.token),
-                data = mapOf("level" to part, "answer" to answer)
-            )
-            val parsed = Jsoup.parse(response.text)
-            val resp = parsed.allElements.find { it.tagName() == "article" }?.text()!!
+        val message =
+            if (submissions.containsKey(part) && submissions[part]?.containsKey(answer) == true && !submissions[part]!![answer]!!.contains(
+                    "You gave an answer too recently"
+                )
+            ) {
+                submissions[part]?.get(answer)
+            } else {
+                // Create an OkHttpClient instance
+                val client = OkHttpClient()
 
-            val a_map = submissions.getOrDefault(part, mutableMapOf())
-            a_map[answer] = resp
-            submissions[part] = a_map
-            mapper.writeValue(submissionFile, submissions)
+                val formBody = FormBody.Builder()
+                    .add("level", part.toString())
+                    .add("answer", answer)
+                    .build()
 
-            // return the response to message
-            resp
-        }
+                val request = Request.Builder()
+                    .url(String.format(SUBMIT_URL, year, day))
+                    .header("Cookie", "session=${user.token}")
+                    .post(formBody)
+                    .build()
+
+                client.newCall(request).execute().use { response ->
+                    if (response.isSuccessful) {
+                        val parsed = Jsoup.parse(response.body?.string()!!)
+                        val resp = parsed.allElements.find { it.tagName() == "article" }?.text()!!
+
+                        val a_map = submissions.getOrDefault(part, mutableMapOf())
+                        a_map[answer] = resp
+                        submissions[part] = a_map
+                        mapper.writeValue(submissionFile, submissions)
+
+                        resp
+                    } else {
+                        println("Request failed with status: ${response.code}")
+                        "Error"
+                    }
+                }
+            }
         println(message)
     }
 }

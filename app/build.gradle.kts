@@ -39,7 +39,10 @@ dependencies {
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 
-    implementation("com.github.jkcclemens:khttp:0.1.0")
+    // https://mvnrepository.com/artifact/org.danilopianini/khttp
+    implementation("com.squareup.okhttp3:okhttp:4.11.0") // Use the latest version
+    implementation("com.squareup.moshi:moshi:1.12.0")
+
     implementation("org.jsoup:jsoup:1.14.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
 

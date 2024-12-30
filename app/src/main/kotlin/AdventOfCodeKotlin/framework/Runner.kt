@@ -5,7 +5,7 @@ import java.time.Instant
 
 class Runner {
     companion object {
-        fun solve(year: Int, day: Int, part1: ((PuzzleInputProvider) -> String)? = null , part2: ((PuzzleInputProvider) -> String)? = null) {
+        fun solve(year: Int, day: Int, part1: ((PuzzleInputProvider) -> Any)? = null , part2: ((PuzzleInputProvider) -> Any)? = null) {
             println("$year - Day $day")
             User.allUsers().forEach { user: User ->
                 val puzzle = Puzzle(year, day, user)
@@ -14,13 +14,13 @@ class Runner {
                     val startTime = Instant.now()
                     val part1Answer = it.invoke(puzzle)
                     println("Part 1 - $part1Answer - calculated in ${Instant.now().toEpochMilli() - startTime.toEpochMilli()} ms")
-//                    puzzle.post(part1Answer, 1)
+                    puzzle.post(part1Answer.toString(), 1)
                 }
                 part2?.let {
                     val startTime = Instant.now()
                     val part2Answer = it.invoke(puzzle)
                     println("Part 2 - $part2Answer - calculated in ${Instant.now().toEpochMilli() - startTime.toEpochMilli()} ms")
-                    puzzle.post(part2Answer, 2)
+                    puzzle.post(part2Answer.toString(), 2)
                 }
             }
         }

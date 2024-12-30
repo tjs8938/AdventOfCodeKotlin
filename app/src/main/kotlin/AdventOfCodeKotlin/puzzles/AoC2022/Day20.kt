@@ -71,6 +71,26 @@ class Day20 {
 
             return (oneThousand.num + twoThousand.num + threeThousand.num).toString()
         }
+
+
+        class Node(val num: Long) {
+            lateinit var left: Node
+            lateinit var right: Node
+
+            fun walk(n: Int): Node {
+                var next = this
+                if (n >= 0) {
+                    repeat(n) { next = next.right }
+                } else {
+                    repeat(abs(n)) { next = next.left }
+                }
+                return next
+            }
+
+            override fun toString(): String {
+                return "Node(num=$num, left=${left.num}, right=${right.num})"
+            }
+        }
     }
 }
 
@@ -93,26 +113,4 @@ fun main() {
 
     assert(Day20.part2(example) == "1623178306")
     Runner.solve(2022, 20, part2 = Day20::part2)
-}
-
-
-class Node(val num: Long) {
-    lateinit var left: Node
-    lateinit var right: Node
-
-    fun walk(n: Int): Node {
-        var next = this
-        if (n >= 0) {
-            repeat(n) { next = next.right }
-        } else {
-            repeat(abs(n)) { next = next.left }
-        }
-        return next
-    }
-
-    override fun toString(): String {
-        return "Node(num=$num, left=${left.num}, right=${right.num})"
-    }
-
-
 }
