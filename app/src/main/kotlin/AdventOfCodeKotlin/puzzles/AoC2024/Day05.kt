@@ -18,7 +18,7 @@ class Day05 {
                 list.indices.all { index ->
                     orders[list[index]]?.let { after ->
                         try {
-                            list.subList(0, index - 1).intersect(after).isEmpty()
+                            list.subList(0, index).intersect(after.toSet()).isEmpty()
                         } catch (e: Exception) {
                             true
                         }
@@ -42,7 +42,7 @@ class Day05 {
                 list.indices.any { index ->
                     orders[list[index]]?.let { after ->
                         try {
-                            list.subList(0, index - 1).intersect(after).isNotEmpty()
+                            list.subList(0, index).intersect(after).isNotEmpty()
                         } catch (e: Exception) {
                             false
                         }
@@ -101,7 +101,8 @@ fun main() {
     """.trimIndent()
     )
 
+    println(Day05.part1(example))
     println(Day05.part2(example))
-//    Runner.solve(2024, 5, Day05::part1, Day05::part2)
+    Runner.solve(2024, 5, part1 = Day05::part1)
     Runner.solve(2024, 5, part2 = Day05::part2)
 }

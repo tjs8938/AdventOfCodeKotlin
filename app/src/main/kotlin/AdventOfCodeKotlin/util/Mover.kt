@@ -1,6 +1,6 @@
 package AdventOfCodeKotlin.util
 
-open class Mover<T: Node>(var loc: Pair<Int, Int>, var dir: Direction, val graph: Graph<T>) {
+open class Mover<V, T: Node<V>>(var loc: Pair<Int, Int>, var dir: Direction, val graph: Graph<V, T>) {
     fun move(dir: Direction) {
         loc = dir + loc
     }

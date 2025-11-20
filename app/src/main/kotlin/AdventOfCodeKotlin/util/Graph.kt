@@ -1,15 +1,15 @@
 package AdventOfCodeKotlin.util
 
-class Graph<T: Node>(val width: Int, val height: Int) : HashMap<Pair<Int, Int>, T>() {
+class Graph<V, T: Node<V>>(val width: Int, val height: Int) : HashMap<Pair<Int, Int>, T>() {
     companion object {
 
-        fun <T: AdventOfCodeKotlin.util.Node> buildGraph(
-            input: List<List<Char>>,
-            initialize: (Int, Int, Char) -> T,
-            includePredicate: (Char) -> Boolean = { true },
-            callbacks: Map<Char, (Char, T) -> Unit> = mapOf()
-        ): Graph<T> {
-            val allNodes = Graph<T>(input[0].size, input.size)
+        fun <V, T: Node<V>> buildGraph(
+            input: List<List<V>>,
+            initialize: (Int, Int, V) -> T,
+            includePredicate: (V) -> Boolean = { true },
+            callbacks: Map<V, (V, T) -> Unit> = mapOf()
+        ): Graph<V, T> {
+            val allNodes = Graph<V, T>(input[0].size, input.size)
 
             input.forEachIndexed { rowIndex, row ->
                 row.forEachIndexed { colIndex, cell ->
@@ -29,13 +29,13 @@ class Graph<T: Node>(val width: Int, val height: Int) : HashMap<Pair<Int, Int>, 
 
 }
 
-open class Node(val x: Int, val y: Int, val label: Char) : Adjacent() {
+open class Node<V>(val x: Int, val y: Int, val value: V) : Adjacent() {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Node
+        other as Node<V>
 
         if (x != other.x) return false
         if (y != other.y) return false
@@ -50,11 +50,15 @@ open class Node(val x: Int, val y: Int, val label: Char) : Adjacent() {
     }
 
     override fun toString(): String {
-        return "Node(x=$x, y=$y, label=$label)"
+        return "Node(x=$x, y=$y, label=$value)"
+    }
+
+    fun getNeighborNodes() : List<Node<V>> {
+        return neighbors.map { it as Node<V> }
     }
 }
 
-open class Node3d(x: Int, y: Int, val z: Int, label: Char) : Node(x, y, label) {
+open class Node3d(x: Int, y: Int, val z: Int, label: Char) : Node<Char>(x, y, label) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -77,6 +81,6 @@ open class Node3d(x: Int, y: Int, val z: Int, label: Char) : Node(x, y, label) {
     }
 
     override fun toString(): String {
-        return "Node3d(x=$x, y=$y, z=$z, label=$label)"
+        return "Node3d(x=$x, y=$y, z=$z, label=$value)"
     }
 }

@@ -12,13 +12,13 @@ class Day12 {
         fun part1(puzzle: PuzzleInputProvider): Any {
             val regions = buildRegions(puzzle)
 
-            return regions.sumOf { (type, plots) -> plots.size.toLong() * plots.sumOf { 4 - it.neighbors.count { (it as Node).label == type } } }
+            return regions.sumOf { (type, plots) -> plots.size.toLong() * plots.sumOf { 4 - it.getNeighborNodes().count { it.value == type } } }
         }
 
         private fun buildRegions(
             puzzle: PuzzleInputProvider
-        ): MutableList<Pair<Char, MutableSet<Node>>> {
-            val regions: MutableList<Pair<Char, MutableSet<Node>>> = mutableListOf()
+        ): MutableList<Pair<Char, MutableSet<Node<Char>>>> {
+            val regions: MutableList<Pair<Char, MutableSet<Node<Char>>>> = mutableListOf()
             val input = puzzle.getAsGrid()
             val graph = buildGraph(input, ::Node)
             val remainingPlots = graph.values.toMutableList()
@@ -26,13 +26,13 @@ class Day12 {
             while (remainingPlots.isNotEmpty()) {
                 val first = remainingPlots.removeFirst()
                 var toProcess = setOf(first)
-                val type = first.label
+                val type = first.value
                 val region = mutableSetOf(first)
 
                 while (toProcess.isNotEmpty()) {
                     toProcess = toProcess.flatMap {
-                        it.neighbors.map { it as Node }
-                            .filter { n -> n.label == type && n in remainingPlots }
+                        it.neighbors.map { it as Node<Char> }
+                            .filter { n -> n.value == type && n in remainingPlots }
                     }.toSet()
 
                     remainingPlots.removeAll(toProcess)

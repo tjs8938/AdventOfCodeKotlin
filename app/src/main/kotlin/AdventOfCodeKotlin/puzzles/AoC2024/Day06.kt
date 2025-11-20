@@ -13,7 +13,7 @@ class Day06 {
         fun part1(puzzle: PuzzleInputProvider): Any {
             val input = puzzle.getAsString().map { it.toList() }
 
-            var start: Node? = null
+            var start: Node<Char>? = null
             val graph = buildGraph(input, ::Node, { it != '#' }, mapOf('^' to { _, node -> start = node }))
             val guard = Mover(start!!.y to start!!.x, Direction.NORTH, graph)
 
@@ -35,7 +35,7 @@ class Day06 {
         fun part2(puzzle: PuzzleInputProvider): Any {
             val input = puzzle.getAsString().map { it.toList() }
 
-            var start: Node? = null
+            var start: Node<Char>? = null
             val graph = buildGraph(input, ::Node, { it != '#' }, mapOf('^' to { _, node -> start = node }))
 
             val unblockedGuard = Mover(start!!.y to start!!.x, Direction.NORTH, graph)

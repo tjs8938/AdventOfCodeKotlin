@@ -13,11 +13,11 @@ class Day10 {
         fun part1(puzzle: PuzzleInputProvider): Any {
             val input = puzzle.getAsGrid()
             val graph = buildGraph(input, ::Node)
-            val routeTable = buildRouteTable(graph.values.filter { it.label == '0' }.toList(), { src, dest ->
-                (src as Node).label.code + 1 == (dest as Node).label.code
+            val routeTable = buildRouteTable(graph.values.filter { it.value == '0' }.toList(), { src, dest ->
+                (src as Node<Char>).value.code + 1 == (dest as Node<Char>).value.code
             })
 
-            val filteredRoutes = routeTable.mapValues { (_, value) -> value.filterKeys { (it as Node).label == '9' } }
+            val filteredRoutes = routeTable.mapValues { (_, value) -> value.filterKeys { (it as Node<Char>).value == '9' } }
             return filteredRoutes.values.map { it.size }.sum()
         }
 
@@ -25,10 +25,10 @@ class Day10 {
             val input = puzzle.getAsGrid()
             val graph = buildGraph(input, ::Node)
             val condition = { src: Adjacent, dest: Adjacent ->
-                (src as Node).label.code + 1 == (dest as Node).label.code
+                (src as Node<Char>).value.code + 1 == (dest as Node<Char>).value.code
             }
 
-            var toProcess: List<Adjacent> = graph.values.filter { it.label == '0' }.toList()
+            var toProcess: List<Adjacent> = graph.values.filter { it.value == '0' }.toList()
 
             repeat(9) {
                 toProcess = toProcess.flatMap { start ->
@@ -43,10 +43,10 @@ class Day10 {
             val input = puzzle.getAsGrid()
             val graph = buildGraph(input, ::Node)
             val condition = { src: Adjacent, dest: Adjacent ->
-                (src as Node).label.code + 1 == (dest as Node).label.code
+                (src as Node<Char>).value.code + 1 == (dest as Node<Char>).value.code
             }
 
-            var toProcess: List<Pair<Adjacent, Adjacent>> = graph.values.filter { it.label == '0' }.map { it to it }
+            var toProcess: List<Pair<Adjacent, Adjacent>> = graph.values.filter { it.value == '0' }.map { it to it }
 
             repeat(9) {
                 toProcess = toProcess.flatMap { (trailhead, start) ->

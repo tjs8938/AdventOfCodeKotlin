@@ -16,7 +16,7 @@ class Platform(
     x: Int,
     y: Int,
     label: Char
-) : Node(x, y, label) {
+) : Node<Char>(x, y, label) {
 
     val height = try {
         label.digitToInt()

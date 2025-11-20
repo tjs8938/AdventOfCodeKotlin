@@ -28,7 +28,7 @@ class Day18
                 ###############################
             """.trimIndent().split("\n").map { it.toList() }
 
-            val palms = mutableListOf<Node>()
+            val palms = mutableListOf<Node<Char>>()
             val graph = buildGraph(input, { x, y, c -> Node(x, y, c) }, { it != '#' }, mapOf('P' to { _, n -> palms.add(n) }))
             val start = graph.filterKeys { it.first == 0 || it.second == 0 }.values.first()
             val routes = buildRouteTable(listOf(start))
@@ -112,7 +112,7 @@ class Day18
                 #########################################################################################################################################################################################################
             """.trimIndent().split("\n").map { it.toList() }
 
-            val palms = mutableListOf<Node>()
+            val palms = mutableListOf<Node<Char>>()
             val graph = buildGraph(input, { x, y, c -> Node(x, y, c) }, { it != '#' }, mapOf('P' to { _, n -> palms.add(n) }))
             val starts = graph.filterKeys { it.first == 0 || it.second == 0 ||
                     it.first == input.size - 1 || it.second == input[0].size - 1}.values.toList()
@@ -226,8 +226,8 @@ class Day18
                 ###########################################################################################################################################################################################################################################################
             """.trimIndent().split("\n").map { it.toList() }
 
-            val palms = mutableListOf<Node>()
-            val starts = mutableListOf<Node>()
+            val palms = mutableListOf<Node<Char>>()
+            val starts = mutableListOf<Node<Char>>()
             val graph = buildGraph(input, { x, y, c -> Node(x, y, c) }, { it != '#' },
                 mapOf('P' to { _, n -> palms.add(n) }, '.' to { _, n -> starts.add(n) }))
 

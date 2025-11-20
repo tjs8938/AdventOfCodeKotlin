@@ -13,8 +13,8 @@ import java.util.PriorityQueue
 class Day16 {
     companion object {
 
-        class MazeState(position: Pair<Int, Int>, direction: Direction, val cost: Int, maze: Graph<Node>, val previous: MazeState? = null) :
-            Mover<Node>(position, direction, maze), Comparable<MazeState> {
+        class MazeState(position: Pair<Int, Int>, direction: Direction, val cost: Int, maze: Graph<Char, Node<Char>>, val previous: MazeState? = null) :
+            Mover<Char, Node<Char>>(position, direction, maze), Comparable<MazeState> {
             override fun compareTo(other: MazeState): Int {
                 return cost.compareTo(other.cost)
             }
@@ -24,8 +24,8 @@ class Day16 {
 
             val mazeInput = puzzle.getAsGrid()
             val maze = buildGraph(mazeInput, ::Node, { it != '#' })
-            val startNode = maze.filterValues { it.label == 'S' }.values.first()
-            val endNode = maze.filterValues { it.label == 'E' }.values.first()
+            val startNode = maze.filterValues { it.value == 'S' }.values.first()
+            val endNode = maze.filterValues { it.value == 'E' }.values.first()
             val end = endNode.y to endNode.x
             var current = startNode.y to startNode.x
             var dir = Direction.EAST
@@ -64,8 +64,8 @@ class Day16 {
         fun part2(puzzle: PuzzleInputProvider): Any {
             val mazeInput = puzzle.getAsGrid()
             val maze = buildGraph(mazeInput, ::Node, { it != '#' })
-            val startNode = maze.filterValues { it.label == 'S' }.values.first()
-            val endNode = maze.filterValues { it.label == 'E' }.values.first()
+            val startNode = maze.filterValues { it.value == 'S' }.values.first()
+            val endNode = maze.filterValues { it.value == 'E' }.values.first()
             val end = endNode.y to endNode.x
             var current = startNode.y to startNode.x
             var dir = Direction.EAST

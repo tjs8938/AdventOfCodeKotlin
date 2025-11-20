@@ -13,10 +13,10 @@ class Day08 {
             val input = puzzle.getAsGrid()
             val graph = buildGraph(input, ::Node)
 
-            val antennas = graph.values.filter { it.label != '.' }.groupBy { it.label }
+            val antennas = graph.values.filter { it.value != '.' }.groupBy { it.value }
 
             var antinodes = mutableSetOf<Pair<Int, Int>>()
-            antennas.forEach { (label, nodes) ->
+            antennas.forEach { (value, nodes) ->
                 nodes.forEachIndexed { a_index, a ->
                     nodes.forEachIndexed { b_index, b ->
                         if (a_index != b_index) {
@@ -36,10 +36,10 @@ class Day08 {
             val input = puzzle.getAsGrid()
             val graph = buildGraph(input, ::Node)
 
-            val antennas = graph.values.filter { it.label != '.' }.groupBy { it.label }
+            val antennas = graph.values.filter { it.value != '.' }.groupBy { it.value }
 
             var antinodes = mutableSetOf<Pair<Int, Int>>()
-            antennas.forEach { (label, nodes) ->
+            antennas.forEach { (value, nodes) ->
                 nodes.forEachIndexed { a_index, a ->
                     nodes.forEachIndexed { b_index, b ->
                         if (a_index != b_index) {

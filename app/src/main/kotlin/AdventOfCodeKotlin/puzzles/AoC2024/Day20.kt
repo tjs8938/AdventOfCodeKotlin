@@ -14,8 +14,8 @@ class Day20 {
 
             val input = puzzle.getAsGrid()
 
-            var lateStart: Node? = null
-            var lateEnd: Node? = null
+            var lateStart: Node<Char>? = null
+            var lateEnd: Node<Char>? = null
             val graph = buildGraph(
                 input, ::Node, { it != '#' },
                 mapOf('S' to { _, n -> lateStart = n }, 'E' to { _, n -> lateEnd = n })
@@ -59,8 +59,8 @@ class Day20 {
         fun common(puzzle: PuzzleInputProvider, cheatSize: Int): Any {
             val input = puzzle.getAsGrid()
 
-            var lateStart: Node? = null
-            var lateEnd: Node? = null
+            var lateStart: Node<Char>? = null
+            var lateEnd: Node<Char>? = null
             val graph = buildGraph(
                 input, ::Node, { it != '#' },
                 mapOf('S' to { _, n -> lateStart = n }, 'E' to { _, n -> lateEnd = n })

@@ -48,7 +48,7 @@ class Day15 {
             val start = allNodes.entries.first { it.value.y == 0 }.value
             val routeTable = Adjacent.buildRouteTable(listOf(start))
 
-            println(allNodes.values.filter { it.label == 'H' }.minOf { routeTable[start]!![it]!! } * 2)
+            println(allNodes.values.filter { it.value == 'H' }.minOf { routeTable[start]!![it]!! } * 2)
         }
 
         fun part2() {
@@ -136,15 +136,15 @@ class Day15 {
                 ::Node, { it != '#' && it != '~' })
 
             val start = allNodes.entries.first { it.value.y == 0 }.value
-            val herbs = allNodes.values.filter { it.label in ('A'..'Z') }
+            val herbs = allNodes.values.filter { it.value in ('A'..'Z') }
             val routeTable = Adjacent.buildRouteTable(listOf(start).plus(herbs))
             var bestPath = Int.MAX_VALUE
             val collected = mutableSetOf<Char>()
 
-            fun collect(lastPoint: Node, dist: Int, collected: MutableSet<Char>): Unit {
+            fun collect(lastPoint: Node<Char>, dist: Int, collected: MutableSet<Char>): Unit {
                 if (dist >= bestPath) return
 
-                val options = herbs.filter { it.label !in collected }
+                val options = herbs.filter { it.value !in collected }
 
                 if (options.isEmpty()) {
                     (dist + routeTable[lastPoint]!![start]!!)
@@ -152,9 +152,9 @@ class Day15 {
                         ?.let { bestPath = it }
                 } else {
                     options.forEach { herb ->
-                        collected.add(herb.label)
+                        collected.add(herb.value)
                         collect(herb, dist + routeTable[lastPoint]!![herb]!!, collected)
-                        collected.remove(herb.label)
+                        collected.remove(herb.value)
                     }
                 }
             }
@@ -257,16 +257,16 @@ class Day15 {
             )
 
             val result = orders.sumOf { (start, order) ->
-                val herbs = allNodes.values.filter { it.label in order }.sortedBy { order.indexOf(it.label) }
+                val herbs = allNodes.values.filter { it.value in order }.sortedBy { order.indexOf(it.value) }
                 val routeTable = Adjacent.buildRouteTable(listOf(start).plus(herbs))
 
                 var bestPath = Int.MAX_VALUE
                 val collected = mutableSetOf<Char>()
 
-                fun collect(lastPoint: Node, dist: Int, collected: MutableSet<Char>) {
+                fun collect(lastPoint: Node<Char>, dist: Int, collected: MutableSet<Char>) {
                     if (dist + routeTable[lastPoint]!![start]!! >= bestPath) return
 
-                    val options = herbs.filter { it.label !in collected }
+                    val options = herbs.filter { it.value !in collected }
 
                     if (options.isEmpty()) {
                         (dist + routeTable[lastPoint]!![start]!!)
@@ -274,9 +274,9 @@ class Day15 {
                             ?.let { bestPath = it }
                     } else {
                         options.forEach { herb ->
-                            collected.add(herb.label)
+                            collected.add(herb.value)
                             collect(herb, dist + routeTable[lastPoint]!![herb]!!, collected)
-                            collected.remove(herb.label)
+                            collected.remove(herb.value)
                         }
                     }
                 }
