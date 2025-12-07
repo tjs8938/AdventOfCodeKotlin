@@ -7,8 +7,20 @@ enum class Direction(val dy: Int, val dx: Int) {
     WEST(0, -1)
     ;
 
+    operator fun Pair<Int, Int>.plus(other: Pair<Int, Int>): Pair<Int, Int> {
+        return this.first + other.first to this.second + other.second
+    }
+
+    operator fun Pair<Int, Int>.plus(dir: Direction): Pair<Int, Int> {
+        return this.first + dir.dy to this.second + dir.dx
+    }
+
     operator fun plus(loc: Pair<Int, Int>): Pair<Int, Int> {
         return loc.first + dy to loc.second + dx
+    }
+
+    operator fun times(mult: Int): Pair<Int, Int> {
+        return dy * mult to dx * mult
     }
 
     fun turnRight(): Direction {

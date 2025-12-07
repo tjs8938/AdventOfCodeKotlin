@@ -3,11 +3,16 @@ package AdventOfCodeKotlin.util
 class Graph<V, T: Node<V>>(val width: Int, val height: Int) : HashMap<Pair<Int, Int>, T>() {
     companion object {
 
+        fun <V> cardinalNeighbor(a: Node<V>, b: Node<V>): Boolean {
+            return (a.x == b.x || a.y == b.y)
+        }
+
         fun <V, T: Node<V>> buildGraph(
             input: List<List<V>>,
             initialize: (Int, Int, V) -> T,
             includePredicate: (V) -> Boolean = { true },
-            callbacks: Map<V, (V, T) -> Unit> = mapOf()
+            callbacks: Map<V, (V, T) -> Unit> = mapOf(),
+            neighborPredicate: (T, T) -> Boolean = ::cardinalNeighbor
         ): Graph<V, T> {
             val allNodes = Graph<V, T>(input[0].size, input.size)
 
@@ -16,8 +21,18 @@ class Graph<V, T: Node<V>>(val width: Int, val height: Int) : HashMap<Pair<Int, 
                     if (includePredicate(cell)) {
                         val node = initialize(colIndex, rowIndex, cell)
                         allNodes[rowIndex to colIndex] = node
-                        allNodes[rowIndex to colIndex - 1]?.let { node.addNeighbor(it) }
-                        allNodes[rowIndex - 1 to colIndex]?.let { node.addNeighbor(it) }
+                        allNodes[rowIndex to colIndex - 1]?.let {
+                            if (neighborPredicate(node, it)) node.addNeighbor(it)
+                        }
+                        allNodes[rowIndex - 1 to colIndex]?.let {
+                            if (neighborPredicate(node, it)) node.addNeighbor(it)
+                        }
+                        allNodes[rowIndex - 1 to colIndex - 1]?.let {
+                            if (neighborPredicate(node, it)) node.addNeighbor(it)
+                        }
+                        allNodes[rowIndex - 1 to colIndex + 1]?.let {
+                            if (neighborPredicate(node, it)) node.addNeighbor(it)
+                        }
                         callbacks[cell]?.let { it(cell, node) }
                     }
                 }

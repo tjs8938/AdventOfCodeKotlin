@@ -10,7 +10,7 @@ abstract class Adjacent {
     }
 
     companion object {
-        fun buildRouteTable(nodes: List<Adjacent>, condition: (Adjacent, Adjacent)-> Boolean = { a1, a2 -> true}):
+        fun buildRouteTable(nodes: List<Adjacent>, condition: (Adjacent, Adjacent)-> Boolean = { _, _ -> true}):
                 Map<Adjacent, Map<Adjacent, Int>> {
             val routeTable = mutableMapOf<Adjacent, MutableMap<Adjacent, Int>>()
             nodes.forEach { node ->

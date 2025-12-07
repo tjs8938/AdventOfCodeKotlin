@@ -3,6 +3,9 @@ package AdventOfCodeKotlin.puzzles.EverybodyCodes2025
 import AdventOfCodeKotlin.puzzles.EverybodyCodes2025.Quest11.Companion.part1
 import AdventOfCodeKotlin.puzzles.EverybodyCodes2025.Quest11.Companion.part2
 import AdventOfCodeKotlin.puzzles.EverybodyCodes2025.Quest11.Companion.part3
+import kotlin.math.ceil
+import kotlin.math.min
+import kotlin.system.exitProcess
 
 class Quest11 {
     companion object {
@@ -49,66 +52,17 @@ class Quest11 {
 
         fun part2() {
             val input = """
-                3112
-                719767
-                3565
-                2906
-                528195
-                500135
-                492753
-                803372
-                5203
-                775083
-                4616
-                369638
-                545765
-                401956
-                332730
-                626504
-                527975
-                261252
-                313434
-                358389
-                380509
-                536738
-                415355
-                154805
-                645760
-                602568
-                130044
-                251430
-                53334
-                868955
-                14686
-                711296
-                541171
-                827234
-                410811
-                228
-                648260
-                697538
-                1418
-                461534
-                791275
-                804447
-                942433
-                360220
-                7379
-                2472
-                939155
-                1217
-                960817
-                101110
-                140862
-                716975
-                383968
-                497575
-                869281
-                144195
-                411315
-                424355
-                65237
-                154948
+                805
+                706
+                179
+                48
+                158
+                150
+                232
+                885
+                598
+                524
+                423
             """.trimIndent().lines().map { it.trim().toInt() }.toMutableList()
             var round = 0
             while (input.zipWithNext().any { it.first > it.second }) {
@@ -138,7 +92,7 @@ class Quest11 {
         }
 
         fun part3() {
-            val input = """
+            val columnHeights = """
                 11888179286
                 20201729226
                 34998923050
@@ -240,36 +194,101 @@ class Quest11 {
                 9884218155473
                 9947704697066
             """.trimIndent().lines().map { it.trim().toLong() }.toMutableList()
-            var round = 0
-            while (input.zipWithNext().any { it.first > it.second }) {
-                var index = 0
-                while (index < input.size - 1) {
-                    if (input[index] > input[index + 1]) {
-                        input[index]--
-                        input[index + 1]++
+            class DuckColumn(val index: Int) {
+                var height: Long
+                    get() = columnHeights[index]
+                    set(value) {
+                        columnHeights[index] = value
                     }
-                    index++
+
+                override fun toString(): String {
+                    return "DuckColumn(index=$index, height=$height)"
                 }
-                round++
             }
 
-            while (input.zipWithNext().any { it.first < it.second }) {
-                var index = 0
-                while (index < input.size - 1) {
-                    if (input[index] < input[index + 1]) {
-                        input[index]++
-                        input[index + 1]--
+            class DuckColumnGroup(val columns: MutableList<DuckColumn> = mutableListOf()) {
+
+                val targetHeight: Long
+                    get() = getColumnHeights().average().toLong()
+
+                fun getColumnHeights(): List<Long> {
+                    return this.columns.map { it.height }
+                }
+
+                fun isLevel(): Boolean {
+                    return this.columns.toSet().size == 1
+                }
+
+                fun rounds(): Long {
+                    return getColumnHeights().map { it - targetHeight }.filter { it > 0 }.sum()
+                }
+
+                fun spread() {
+                    var extras = getColumnHeights().sum() - (targetHeight * columns.size)
+                    var newHeight = targetHeight
+
+                    columns.forEachIndexed { i, column ->
+                        if (i < columns.size - extras) {
+                            column.height = newHeight
+                        } else {
+                            column.height = newHeight + 1
+                        }
                     }
+                }
+
+                override fun toString(): String {
+                    return "DuckColumnGroup(columns=${getColumnHeights()})"
+                }
+            }
+
+            var round = 0L
+            while (columnHeights.zipWithNext().any { it.first > it.second }) {
+                var index = 0
+                var columnGroup = DuckColumnGroup()
+                val columnGroups = mutableListOf<DuckColumnGroup>()
+
+                // build descending column groups
+                while (index < columnHeights.size) {
+                    if (columnGroup.columns.isNotEmpty() && columnHeights[index - 1] < columnHeights[index]) {
+                        columnGroups.add(columnGroup)
+                        columnGroup = DuckColumnGroup()
+                    }
+                    columnGroup.columns.add(DuckColumn(index))
                     index++
                 }
-                round++
+                columnGroups.add(columnGroup)
+
+                // combine column groups if they would join after averaging out
+                var changed = true
+                while (changed) {
+                    changed = false
+                    var index = columnGroups.size - 1
+                    while (index > 0) {
+                        val leftGroup = columnGroups[index - 1]
+                        val rightGroup = columnGroups[index]
+                        if (leftGroup.targetHeight >= rightGroup.targetHeight) {
+                            leftGroup.columns.addAll(rightGroup.columns)
+                            columnGroups.removeAt(index)
+                            changed = true
+                        }
+                        index--
+                    }
+                }
+
+                round = columnGroups.maxOf { it.rounds() }
+
+                columnGroups
+                    .filterNot { it.isLevel() }
+                    .forEach { it.spread() }
             }
+
+            val fullColumnGroup = DuckColumnGroup(columnHeights.indices.map { DuckColumn(it) }.toMutableList())
+            round += fullColumnGroup.rounds()
+
             println(round)
 
         }
-
     }
-
 }
 
 fun main(args: Array<String>) {

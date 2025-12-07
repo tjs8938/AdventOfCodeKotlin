@@ -5,22 +5,34 @@ import java.time.Instant
 
 class Runner {
     companion object {
-        fun solve(year: Int, day: Int, part1: ((PuzzleInputProvider) -> Any)? = null , part2: ((PuzzleInputProvider) -> Any)? = null) {
+        fun solve(
+            year: Int,
+            day: Int,
+            part1: ((PuzzleInputProvider) -> Any)? = null,
+            part2: ((PuzzleInputProvider) -> Any)? = null
+        ) {
+            part1?.let {
+                solve(year, day, 1, it)
+            }
+            part2?.let {
+                solve(year, day, 2, it)
+            }
+        }
+
+        fun solve(year: Int, day: Int, part: Int, solver: ((PuzzleInputProvider) -> Any)) {
             println("$year - Day $day")
             User.allUsers().forEach { user: User ->
                 val puzzle = Puzzle(year, day, user)
                 println("User ${user.email}:")
-                part1?.let {
+                solver.let {
                     val startTime = Instant.now()
-                    val part1Answer = it.invoke(puzzle)
-                    println("Part 1 - $part1Answer - calculated in ${Instant.now().toEpochMilli() - startTime.toEpochMilli()} ms")
-                    puzzle.post(part1Answer.toString(), 1)
-                }
-                part2?.let {
-                    val startTime = Instant.now()
-                    val part2Answer = it.invoke(puzzle)
-                    println("Part 2 - $part2Answer - calculated in ${Instant.now().toEpochMilli() - startTime.toEpochMilli()} ms")
-                    puzzle.post(part2Answer.toString(), 2)
+                    val answer = it.invoke(puzzle)
+                    println(
+                        "Part $part - $answer - calculated in ${
+                            Instant.now().toEpochMilli() - startTime.toEpochMilli()
+                        } ms"
+                    )
+                    puzzle.post(answer.toString(), part)
                 }
             }
         }
