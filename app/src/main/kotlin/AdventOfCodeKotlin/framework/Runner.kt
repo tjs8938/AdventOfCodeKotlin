@@ -19,8 +19,13 @@ class Runner {
             }
         }
 
-        fun solve(year: Int, day: Int, part: Int, solver: ((PuzzleInputProvider) -> Any)) {
+        fun solve(year: Int, day: Int, part: Int, solver: ((PuzzleInputProvider) -> Any), vararg examples: ExamplePuzzle) {
             println("$year - Day $day")
+            for (example in examples) {
+                println("Example:")
+                val answer = solver.invoke(example)
+                example.post(answer.toString(), part)
+            }
             User.allUsers().forEach { user: User ->
                 val puzzle = Puzzle(year, day, user)
                 println("User ${user.email}:")

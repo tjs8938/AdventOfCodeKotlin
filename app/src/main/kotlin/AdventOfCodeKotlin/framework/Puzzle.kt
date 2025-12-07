@@ -118,13 +118,15 @@ class Puzzle(val year: Int, val day: Int, val user: User) : PuzzleInputProvider 
     }
 }
 
-class ExamplePuzzle(private val input: String) : PuzzleInputProvider {
+class ExamplePuzzle(private val input: String, private val expectedAnswer: String? = null) : PuzzleInputProvider {
     override fun get(): String {
         return input
     }
 
     override fun post(answer: String, part: Int) {
-        // do nothing
+        if (expectedAnswer != null && answer != expectedAnswer) {
+            error("Part $part example failed: expected '$expectedAnswer' but got '$answer'")
+        }
     }
 
 }

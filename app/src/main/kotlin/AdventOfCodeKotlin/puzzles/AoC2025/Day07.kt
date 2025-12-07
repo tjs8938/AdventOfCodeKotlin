@@ -80,15 +80,10 @@ fun main() {
             ...............
             .^.^.^.^.^...^.
             ...............
-        """.trimIndent()
+        """.trimIndent(),
+        "40"
     )
-    Day07.part2(example)
-        .let {
-            println(it)
-            it
-        }.takeIf { it == "40" }
-        ?: error("Part2 - Example failed")
 
-    Runner.solve(2025, 7, part2 = Day07::part2)
+    Runner.solve(2025, 7, 2, Day07::part2, example)
 }
 

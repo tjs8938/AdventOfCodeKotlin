@@ -17,7 +17,7 @@ class Day09 {
 }
 
 fun main() {
-    Runner.solve(2025, 9, part1 = Day09::part1)
-    Runner.solve(2025, 9, part2 = Day09::part2)
+    Runner.solve(2025, 9, 1, Day09::part1)
+    Runner.solve(2025, 9, 2, Day09::part2)
 }
 
