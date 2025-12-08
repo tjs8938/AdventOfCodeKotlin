@@ -1,4 +1,4 @@
-package AdventOfCodeKotlin.framework
+package AdventOfCodeKotlin.oldframework
 
 import framework.User
 import java.time.Instant

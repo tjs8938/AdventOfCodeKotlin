@@ -1,7 +1,7 @@
 package AdventOfCodeKotlin.puzzles.AoC2022
 
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 
 data class DirTree(val name: String, val parent: DirTree? = null) {
     val subdirs: MutableMap<String, DirTree> = mutableMapOf()

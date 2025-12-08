@@ -1,9 +1,8 @@
 package AdventOfCodeKotlin.puzzles.AoC2022
 
-import AdventOfCodeKotlin.framework.ExamplePuzzle
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
-import java.math.BigDecimal
+import AdventOfCodeKotlin.oldframework.ExamplePuzzle
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 import java.math.BigInteger
 
 

@@ -1,8 +1,8 @@
 package AdventOfCodeKotlin.puzzles.AoC2023
 
-import AdventOfCodeKotlin.framework.ExamplePuzzle
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
+import AdventOfCodeKotlin.oldframework.ExamplePuzzle
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 import AdventOfCodeKotlin.puzzles.AoC2023.Day10.Directions
 import AdventOfCodeKotlin.puzzles.AoC2023.Day10.Directions.EAST
 import AdventOfCodeKotlin.puzzles.AoC2023.Day10.Directions.SOUTH

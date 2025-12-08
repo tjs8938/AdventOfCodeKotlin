@@ -1,7 +1,7 @@
 package AdventOfCodeKotlin.puzzles
 
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 
 
 

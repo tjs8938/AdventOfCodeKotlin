@@ -1,9 +1,8 @@
 package AdventOfCodeKotlin.puzzles.AoC2023
 
-import AdventOfCodeKotlin.framework.ExamplePuzzle
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
-import java.util.EnumMap
+import AdventOfCodeKotlin.oldframework.ExamplePuzzle
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 
 
 class Day03 {

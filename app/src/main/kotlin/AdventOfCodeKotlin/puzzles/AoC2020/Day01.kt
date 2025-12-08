@@ -1,7 +1,7 @@
 package AdventOfCodeKotlin.puzzles.AoC2020
 
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 
 
 fun List<Int>.findPairOfSum(sum: Int): Pair<Int, Int>? {

@@ -1,8 +1,8 @@
 package AdventOfCodeKotlin.puzzles.AoC2024
 
-import AdventOfCodeKotlin.framework.ExamplePuzzle
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
+import AdventOfCodeKotlin.oldframework.ExamplePuzzle
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 import AdventOfCodeKotlin.util.Direction
 import AdventOfCodeKotlin.util.Graph
 import AdventOfCodeKotlin.util.Graph.Companion.buildGraph

@@ -1,10 +1,8 @@
 package AdventOfCodeKotlin.puzzles.AoC2022
 
-import AdventOfCodeKotlin.framework.ExamplePuzzle
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
-import com.google.common.collect.Streams.zip
-import kotlin.math.abs
+import AdventOfCodeKotlin.oldframework.ExamplePuzzle
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 
 
 class Day18 {

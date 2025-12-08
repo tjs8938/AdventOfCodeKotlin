@@ -1,9 +1,7 @@
 package AdventOfCodeKotlin.puzzles.AoC2024
 
-import AdventOfCodeKotlin.framework.ExamplePuzzle
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
-import java.lang.Thread.sleep
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 
 class Day14 {
     companion object {

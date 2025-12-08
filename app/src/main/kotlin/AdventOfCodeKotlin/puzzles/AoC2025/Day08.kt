@@ -1,8 +1,8 @@
 package AdventOfCodeKotlin.puzzles.AoC2025
 
-import AdventOfCodeKotlin.framework.ExamplePuzzle
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
+import AdventOfCodeKotlin.oldframework.ExamplePuzzle
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 import AdventOfCodeKotlin.util.Combinatorics
 import kotlin.math.pow
 import kotlin.math.sqrt

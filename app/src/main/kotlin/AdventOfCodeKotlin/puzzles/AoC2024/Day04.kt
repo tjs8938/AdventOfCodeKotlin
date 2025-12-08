@@ -1,7 +1,7 @@
 package AdventOfCodeKotlin.puzzles.AoC2024
 
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 import AdventOfCodeKotlin.puzzles.AoC2022.plus
 import AdventOfCodeKotlin.util.Node
 import AdventOfCodeKotlin.util.Graph.Companion.buildGraph

@@ -1,7 +1,7 @@
 package AdventOfCodeKotlin.puzzles.AoC2025
 
-import AdventOfCodeKotlin.framework.PuzzleInputProvider
-import AdventOfCodeKotlin.framework.Runner
+import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
+import AdventOfCodeKotlin.oldframework.Runner
 
 class Day11 {
     companion object {
