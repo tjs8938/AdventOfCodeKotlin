@@ -47,6 +47,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
 
     implementation("tools.aqua:z3-turnkey:4.12.2.1")
+
+    implementation("org.jetbrains.kotlinx:multik-core:0.2.3")
+    implementation("org.jetbrains.kotlinx:multik-default:0.2.3")
 }
 
 application {
