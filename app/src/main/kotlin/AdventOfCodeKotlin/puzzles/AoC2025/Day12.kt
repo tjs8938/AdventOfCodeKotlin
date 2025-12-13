@@ -147,6 +147,41 @@ class Day12 {
             return count.toString()
         }
 
+        fun part1b(puzzle: PuzzleInputProvider): String {
+            // Alternative implementation for part 1 if needed
+            val inputBlocks = puzzle.get().split("\n\n")
+            val regionStrings = inputBlocks.last().lines()
+            val regions = regionStrings.map {
+                val parts = it.split(": ")
+                val dims = parts[0].split("x").map { it.toInt() }
+                val counts = parts[1].split(" ").map { it.toInt() }
+                Region(dims[0], dims[1], counts)
+            }
+
+            val presents = inputBlocks.dropLast(1).map { block ->
+                val lines = block.lines()
+                val id = lines[0].dropLast(1).toInt()
+                val shape = mutableSetOf<Point2d>()
+                lines.drop(1).forEachIndexed { y, line ->
+                    line.forEachIndexed { x, c ->
+                        if (c == '#') {
+                            shape.add(Point2d(x.toLong(), y.toLong()))
+                        }
+                    }
+                }
+                Present(id, shape)
+            }
+
+            return regions.count { region ->
+                val area = region.height * region.width
+                val presentArea = region.presentCounts.mapIndexed { index, count ->
+                    count * presents[index].shape.size
+                }.sum()
+                area >= presentArea
+            }.toString()
+
+        }
+
         fun part2(puzzle: PuzzleInputProvider): String {
             // TODO: Implement part 2 logic
             return ""
@@ -192,7 +227,7 @@ fun main() {
         12x5: 1 0 1 0 3 2
     """.trimIndent(), "2"
     )
-    Runner.solve(2025, 12, 1, Day12::part1, ex)
+    Runner.solve(2025, 12, 1, Day12::part1b)
     Runner.solve(2025, 12, 2, Day12::part2)
 }
 
