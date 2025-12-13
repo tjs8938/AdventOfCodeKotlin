@@ -3,18 +3,46 @@ package AdventOfCodeKotlin.puzzles.AoC2025
 import AdventOfCodeKotlin.oldframework.ExamplePuzzle
 import AdventOfCodeKotlin.oldframework.PuzzleInputProvider
 import AdventOfCodeKotlin.oldframework.Runner
-import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+import AdventOfCodeKotlin.util.Combinatorics
+import AdventOfCodeKotlin.util.MemoizedFunction.Companion.memoize
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.api.zeros
-import org.jetbrains.kotlinx.multik.default.linalg.DefaultLinAlgEx
-import org.jetbrains.kotlinx.multik.ndarray.data.D2
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
+import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.set
-import kotlin.math.max
+import org.jetbrains.kotlinx.multik.ndarray.operations.all
+import org.jetbrains.kotlinx.multik.ndarray.operations.any
+import org.jetbrains.kotlinx.multik.ndarray.operations.minus
+import org.jetbrains.kotlinx.multik.ndarray.operations.plus
+
+infix fun D1Array<Int>.xor(other: D1Array<Int>): D1Array<Int> {
+    var result = mk.zeros<Int>(this.size)
+    for (i in this.indices) {
+        result[i] = this.get(i) xor other.get(i)
+    }
+    return result
+}
+
+operator fun D1Array<Int>.rem(other: Int): D1Array<Int> {
+    var result = mk.zeros<Int>(this.size)
+    for (i in this.indices) {
+        result[i] = this.get(i) % other
+    }
+    return result
+}
+
 
 class Day10 {
     companion object {
 
+        fun div(array: D1Array<Int>, other: Int): D1Array<Int> {
+            var result = mk.zeros<Int>(array.size)
+            for (i in array.indices) {
+                result[i] = array.get(i) / other
+            }
+            return result
+        }
 
         fun part1(puzzle: PuzzleInputProvider): String {
             class Machine(val target: Int, val buttons: List<Int>)
@@ -46,51 +74,67 @@ class Day10 {
         }
 
         fun part2(puzzle: PuzzleInputProvider): String {
-            class Machine(val buttons: List<List<Int>>, val joltage: List<Int>)
 
             val machineStrings = puzzle.getAsString()
             val machines = machineStrings.map { machine ->
-                val targetString = machine.substring(1, machine.indexOfFirst { it == ']' })
+                val joltage = machine.substring(machine.indexOfFirst { it == '{' })
+                    .drop(1).dropLast(1).split(",").map { it.trim().toInt() }.let { mk.ndarray(it) }
+
                 val buttons =
                     machine.substring(machine.indexOfFirst { it == '(' }, machine.indexOfLast { it == ')' } + 1)
                         .split(" ")
                         .map { it.trim().drop(1).dropLast(1).split(",").map { it.trim().toInt() } }
-                val joltage = machine.substring(machine.indexOfFirst { it == '{' })
-                    .drop(1).dropLast(1).split(",").map { it.trim().toInt() }
-                val dim = max(joltage.size, buttons.size)
-                val mArray = mk.zeros<Double>(dim, dim)
-                buttons.forEachIndexed { i, button ->
-                    button.forEach { wire ->
-                        mArray[wire, i] = 1.0
+                        .map {
+                            val signals = mk.zeros<Int>(joltage.size)
+                            it.forEach { s -> signals[s] = 1 }
+                            signals
+                        }
+
+                val buttonCombos: Map<D1Array<Int>, List<Pair<D1Array<Int>, Int>>> = (0..buttons.size).flatMap { n ->
+                    Combinatorics.combinations(buttons, n).map { combo ->
+                        val bitMap = combo.fold(mk.zeros<Int>(joltage.size)) { acc, button ->
+                            acc xor button
+                        }
+                        val sum = combo.fold(mk.zeros<Int>(joltage.size)) { acc, button ->
+                            acc + button
+                        }
+                        bitMap to (sum to n)
+                    }
+                }.groupBy({ it.first }, { it.second })
+
+                val lowestButtons = memoize<D1Array<Int>, Long> { state: D1Array<Int> ->
+
+                    if (state.all { it == 0 }) {
+                        0L
+                    } else if (state.any { it < 0 }) {
+                        Long.MAX_VALUE
+                    } else {
+                        val bitmap = state % 2
+                        if (bitmap in buttonCombos) {
+                            val minButtons = buttonCombos[bitmap]!!.minOf { (buttonSums, buttonCount) ->
+                                val reduceByButtons = state - buttonSums
+                                val divTwo = div(reduceByButtons, 2)
+                                val recurse = this(divTwo)
+                                if (recurse == Long.MAX_VALUE) {
+                                    Long.MAX_VALUE
+                                } else {
+                                buttonCount.toLong() + (recurse * 2L)
+                                    }
+                            }
+//                            println("State: $state -> Min Buttons: $minButtons")
+                            minButtons
+                        } else {
+                            Long.MAX_VALUE
+                        }
                     }
                 }
-                val joltageArray = mk.zeros<Double>(dim, 1)
-                joltage.forEachIndexed { i, jolt ->
-                    joltageArray[i, 0] = jolt.toDouble()
-                }
 
-                println(mArray)
-                val result = DefaultLinAlgEx.solve(mArray, joltageArray)
-                Machine(buttons, joltage)
+                lowestButtons(joltage)
             }
 
 
 
-            return machines.sumOf { machine ->
-                var buttonCount = 0
-                var lightStates = setOf(List(machine.joltage.size) { 0 })
-                while (machine.joltage !in lightStates) {
-                    lightStates = lightStates.flatMap { oldState ->
-                        machine.buttons.map { button ->
-                            val nextState = oldState.toMutableList()
-                            button.forEach { nextState[it]++ }
-                            nextState
-                        }
-                    }.toSet()
-                    buttonCount++
-                }
-                buttonCount
-            }.toString()
+            return machines.sum().toString()
         }
     }
 }
